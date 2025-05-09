@@ -2,20 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cnb0hu5cavfjo"
-<<<<<<< HEAD
-path="res://.godot/imported/joker.png-e2da2bafc343f97673e0063c23d586ff.ctex"
-=======
+uid="uid://bcbt01uaffoov"
 path="res://.godot/imported/joker.png-be5cf945773fcb44a01d7bc66a161de8.ctex"
->>>>>>> 900c96ef821eb644b8c62fb41b89049503c7e303
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://cards1/joker.png"
-dest_files=["res://.godot/imported/joker.png-e2da2bafc343f97673e0063c23d586ff.ctex"]
+source_file="res://cards/joker.png"
+dest_files=["res://.godot/imported/joker.png-be5cf945773fcb44a01d7bc66a161de8.ctex"]
 
 [params]
 

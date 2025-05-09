@@ -11,7 +11,7 @@ var liar_button: Button
 var timer_label: Label
 var turn_timer: Timer
 var round_card: Sprite2D
-var background: HBoxContainer
+var table_area: Sprite2D  
 
 # Card configuration
 const MAIN_DECK_TYPES = ["king", "queen", "ace", "joker"]
@@ -27,6 +27,10 @@ var hand_cards: Array = []
 var selected_cards: Array = []
 var turn_time_left: int = 60
 
+# Координати центру столу, який має розмір 1280x720
+var table_center_x: float = -641  # Центр столу по X
+var table_center_y: float = -360  # Центр столу по Y
+
 func _ready():
 	turn_indicator = $Turn
 	round_label = $UI/Rounds
@@ -36,39 +40,33 @@ func _ready():
 	timer_label = $UI/TurnTimer/TimerLabel
 	turn_timer = $UI/TurnTimer
 	round_card = $Deck/RoundCard
-	background = $Table_Hand
+	table_area = $UI/Background  
 
 	pass_button.pressed.connect(_on_PassButton_pressed)
 	liar_button.pressed.connect(_on_LiarButton_pressed)
 	turn_timer.timeout.connect(_on_TurnTimer_timeout)
-	turn_timer.wait_time = 1.0  # 1 second intervals
+	turn_timer.wait_time = 1.0
 	turn_timer.one_shot = false
 	turn_timer.start()
-	
-
 
 	start_round()
 
 func start_round():
-	# Pick table card
 	var table_deck = ["king", "queen", "ace"]
 	var chosen_card = table_deck.pick_random()
 	round_label.text = "Current Round: \n %s" % chosen_card.capitalize()
 	round_card.texture = load("res://cards/%s.png" % chosen_card)
 
-	# Prepare hand
 	hand_cards.clear()
 	hand_container.get_children().map(func(c): c.queue_free())
 	selected_cards.clear()
 
-	# Shuffle and deal cards
 	var full_deck = []
 	for type in MAIN_DECK_TYPES:
 		for i in MAIN_DECK_COUNTS[type]:
 			full_deck.append(type)
 	full_deck.shuffle()
 
-	var card_spacing: float = 80.0
 	for i in range(5):
 		var card_type: String = full_deck.pop_back()
 		var card_tex: Texture2D = load("res://cards/%s.png" % card_type)
@@ -77,10 +75,9 @@ func start_round():
 		card_button.texture_normal = card_tex
 		card_button.pressed.connect(_on_Card_pressed.bind(card_button))
 
-		# Set up scaling inside a wrapper
 		var wrapper = Control.new()
-		wrapper.custom_minimum_size = Vector2(50, 75)  # Desired size inside HBox
-		card_button.scale = Vector2(0.34, 0.34)
+		wrapper.custom_minimum_size = Vector2(50, 75)
+		card_button.scale = Vector2(0.3, 0.3)
 		card_button.position = Vector2.ZERO
 		card_button.anchor_left = 0
 		card_button.anchor_top = 0
@@ -88,11 +85,11 @@ func start_round():
 		card_button.anchor_bottom = 0
 		card_button.size_flags_horizontal = Control.SIZE_FILL
 		card_button.size_flags_vertical = Control.SIZE_FILL
-
+		var card_spacing: float = 140
+		hand_container.add_theme_constant_override("separation", card_spacing)
 		wrapper.add_child(card_button)
 		hand_container.add_child(wrapper)
-		hand_cards.append(card_button)  # Still store only the card itself
-
+		hand_cards.append(card_button)
 
 	pass_button.show()
 	liar_button.show()
@@ -107,21 +104,43 @@ func _on_Card_pressed(button):
 		button.modulate = Color(1, 1, 1)
 	else:
 		selected_cards.append(button)
-		button.modulate = c   # Orange glow
+		button.modulate = c
 
 func _on_PassButton_pressed():
 	if selected_cards.is_empty():
 		print("No cards selected!")
 		return
 
+	var card_scale = 0.25
+	var card_width = 50 * card_scale
+	var spacing = 150
+	var total_width = selected_cards.size() * card_width + (selected_cards.size() - 1) * spacing
+
+	# Використовуємо координати для правильного центрованого позиціонування карт
+	var base_x = table_center_x + 640  # 640 - це половина ширини столу (1280 / 2)
+	var base_y = table_center_y + 360  # 360 - це половина висоти столу (720 / 2)
+
+	# Вираховуємо центральну точку для карт
+	var center_offset = (1280 - total_width) / 2  # Обчислюємо центр для карт, використовуючи ширину столу (1280)
+
+	# Розташовуємо карти по центру
 	for i in range(selected_cards.size()):
 		var card = selected_cards[i]
 		card.texture_normal = load("res://cards/back.png")
 		card.modulate = Color(1, 1, 1)
-		# Move from hand to table
-		hand_container.remove_child(card)
-		background.add_child(card)
-		
+		card.scale = Vector2(card_scale, card_scale)
+
+		# Видаляємо картки з обгортки
+		var wrapper = card.get_parent()
+		if wrapper and wrapper.get_parent() == hand_container:
+			wrapper.remove_child(card)
+			hand_container.remove_child(wrapper)
+
+		add_child(card)
+		# Визначаємо координати карт
+		var x_position = base_x + center_offset + i * (card_width + spacing)
+		card.global_position = Vector2(x_position, base_y)
+
 	selected_cards.clear()
 	pass_button.hide()
 	liar_button.hide()

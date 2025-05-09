@@ -1,12 +1,13 @@
-[gd_scene load_steps=17 format=3 uid="uid://b7wh5dqyj0oj2"]
+[gd_scene load_steps=18 format=3 uid="uid://b7wh5dqyj0oj2"]
 
 [ext_resource type="Script" path="res://game.gd" id="1_om64c"]
-[ext_resource type="Texture2D" uid="uid://ddney0g52ah7v" path="res://mag.png" id="2_8j16d"]
-[ext_resource type="Texture2D" uid="uid://cbuip1j2sgkjq" path="res://cards/back.png" id="2_gp8go"]
+[ext_resource type="Texture2D" uid="uid://cxdwnsjbo71k0" path="res://mag.png" id="2_8j16d"]
+[ext_resource type="Texture2D" uid="uid://bcdm3rc1kp7pw" path="res://cards/back.png" id="2_gp8go"]
 [ext_resource type="Texture2D" uid="uid://b402qap4bsy0e" path="res://background.jpg" id="2_uvkbl"]
 [ext_resource type="Texture2D" uid="uid://cnmo215prcopy" path="res://20250509_183332.png" id="3_nixtt"]
 [ext_resource type="Texture2D" uid="uid://p8hq6g6v1mhy" path="res://Turn.png" id="3_ur12f"]
 [ext_resource type="Texture2D" uid="uid://cig4wywgx2v0v" path="res://20250509_192501.png" id="4_s4jyx"]
+[ext_resource type="Texture2D" uid="uid://dersj1lk8h13n" path="res://character0.png" id="7_j8u8f"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dhp1c"]
 font_size = 24
@@ -28,10 +29,9 @@ font_size = 24
 
 [sub_resource type="LabelSettings" id="LabelSettings_d8c7j"]
 font_size = 24
-font_color = Color(0, 0, 0, 1)
 
 [node name="Game" type="Node2D"]
-position = Vector2(-3, 0)
+position = Vector2(688, 120)
 script = ExtResource("1_om64c")
 
 [node name="UI" type="Control" parent="."]
@@ -72,10 +72,10 @@ uppercase = true
 
 [node name="TimerLabel" type="Label" parent="UI/TurnTimer"]
 custom_minimum_size = Vector2(150, 150)
-offset_left = -631.0
-offset_top = 316.0
-offset_right = -481.0
-offset_bottom = 466.0
+offset_left = 72.0
+offset_top = 424.0
+offset_right = 222.0
+offset_bottom = 574.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
@@ -96,14 +96,34 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -235.0
-offset_top = 135.0
-offset_right = 365.0
-offset_bottom = 285.0
+offset_left = -277.0
+offset_top = 136.0
+offset_right = 323.0
+offset_bottom = 286.0
 grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(0.81, 0.81)
 theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Table_Hand" type="HBoxContainer" parent="."]
+z_as_relative = false
+custom_minimum_size = Vector2(600, 150)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -261.0
+offset_top = -16.0
+offset_right = 339.0
+offset_bottom = 134.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.85, 0.85)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 0
 alignment = 1
 
 [node name="Pass" type="Button" parent="."]
@@ -139,122 +159,106 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_ynd6y")
 icon = ExtResource("4_s4jyx")
 
 [node name="Turn" type="Sprite2D" parent="."]
-position = Vector2(-555, -182)
+position = Vector2(-557, -166)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("3_ur12f")
 
-[node name="Player0" type="AnimatedSprite2D" parent="."]
-position = Vector2(-569, -284)
+[node name="Player4" type="ColorRect" parent="."]
+offset_left = -641.0
+offset_top = -359.0
+offset_right = -481.0
+offset_bottom = -199.0
+color = Color(0, 0, 0, 1)
 
-[node name="Player 0" type="ColorRect" parent="Player0"]
-custom_minimum_size = Vector2(150, 150)
-offset_left = -76.0
-offset_top = -76.0
-offset_right = 74.0
-offset_bottom = 74.0
-color = Color(0.928728, 0, 0.119719, 1)
+[node name="Player0" type="Sprite2D" parent="."]
+position = Vector2(-561, -279)
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("7_j8u8f")
 
 [node name="Magazine0" type="Sprite2D" parent="."]
-position = Vector2(-414, -283)
-scale = Vector2(1.2, 1.2)
+position = Vector2(-398, -295)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_8j16d")
 
 [node name="Label" type="Label" parent="Magazine0"]
-offset_left = -17.5
-offset_top = 55.8333
-offset_right = 30.5
-offset_bottom = 100.833
+offset_left = -10.0
+offset_top = 27.0
+offset_right = 38.0
+offset_bottom = 71.9997
+scale = Vector2(0.5, 0.5)
 text = "1/6"
 label_settings = SubResource("LabelSettings_d8c7j")
 
 [node name="Player1" type="AnimatedSprite2D" parent="."]
 position = Vector2(-249, -282)
 
-[node name="Player 1" type="ColorRect" parent="Player1"]
-custom_minimum_size = Vector2(150, 150)
-offset_left = -77.0
-offset_top = -78.0
-offset_right = 73.0
-offset_bottom = 72.0
-color = Color(0.406804, 0.70017, 0.951391, 1)
-
 [node name="Magazine1" type="Sprite2D" parent="."]
-position = Vector2(-87, -283)
-scale = Vector2(1.2, 1.2)
+position = Vector2(-78, -295)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_8j16d")
 
 [node name="Label2" type="Label" parent="Magazine1"]
-offset_left = -17.5
-offset_top = 55.0
-offset_right = 30.5
-offset_bottom = 100.0
+offset_left = -9.30001
+offset_top = 27.0
+offset_right = 38.7
+offset_bottom = 72.0
+scale = Vector2(0.5, 0.5)
 text = "1/6"
 label_settings = SubResource("LabelSettings_d8c7j")
 
 [node name="Player2" type="AnimatedSprite2D" parent="."]
 position = Vector2(80, -286)
 
-[node name="Player 2" type="ColorRect" parent="Player2"]
-custom_minimum_size = Vector2(150, 150)
-offset_left = -76.0
-offset_top = -75.0
-offset_right = 74.0
-offset_bottom = 75.0
-color = Color(0.15, 1, 0, 1)
-
 [node name="Magazine2" type="Sprite2D" parent="."]
-position = Vector2(247, -284)
-scale = Vector2(1.2, 1.2)
+position = Vector2(242, -295)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_8j16d")
 
 [node name="Label" type="Label" parent="Magazine2"]
-offset_left = -17.5
-offset_top = 55.0
-offset_right = 30.5
-offset_bottom = 100.0
+offset_left = -8.5
+offset_top = 27.0
+offset_right = 39.5
+offset_bottom = 72.0
+scale = Vector2(0.5, 0.5)
 text = "1/6"
 label_settings = SubResource("LabelSettings_d8c7j")
 
 [node name="Player3" type="AnimatedSprite2D" parent="."]
 position = Vector2(408, -288)
 
-[node name="Player 3" type="ColorRect" parent="Player3"]
-custom_minimum_size = Vector2(150, 150)
-offset_left = -80.0
-offset_top = -72.0
-offset_right = 70.0
-offset_bottom = 78.0
-color = Color(1, 0.469582, 0.157208, 1)
-
 [node name="Magazine3" type="Sprite2D" parent="."]
-position = Vector2(559, -283)
-scale = Vector2(1.2, 1.2)
+position = Vector2(562, -294)
+scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_8j16d")
 
 [node name="Label2" type="Label" parent="Magazine3"]
-offset_left = -19.1667
-offset_top = 55.0
-offset_right = 28.8333
-offset_bottom = 100.0
+offset_left = -9.0
+offset_top = 27.0
+offset_right = 39.0
+offset_bottom = 72.0
+scale = Vector2(0.5, 0.5)
 text = "1/6"
 label_settings = SubResource("LabelSettings_d8c7j")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-5, 0)
 
-[node name="Table_Hand" type="HBoxContainer" parent="."]
-custom_minimum_size = Vector2(600, 150)
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -250.0
-offset_top = -32.0
-offset_right = 350.0
-offset_bottom = 118.0
-grow_horizontal = 2
-grow_vertical = 0
-scale = Vector2(0.85, 0.85)
-theme_override_constants/separation = 10
-alignment = 1
+[node name="Player7" type="ColorRect" parent="."]
+offset_top = -359.0
+offset_right = 160.0
+offset_bottom = -199.0
+color = Color(0, 0, 0, 1)
+
+[node name="Player6" type="ColorRect" parent="."]
+offset_left = 319.0
+offset_top = -359.0
+offset_right = 479.0
+offset_bottom = -199.0
+color = Color(0, 0, 0, 1)
+
+[node name="Player5" type="ColorRect" parent="."]
+offset_left = -322.0
+offset_top = -359.0
+offset_right = -162.0
+offset_bottom = -199.0
+color = Color(0, 0, 0, 1)
