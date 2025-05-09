@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lawu8laixlf6"
-path="res://.godot/imported/ace.png-59038d53e4721ef9848418ebc5d11ddd.ctex"
+uid="uid://cnmo215prcopy"
+path="res://.godot/imported/20250509_183332.png-80a1953f125901442e7f04357960b6a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://cards/ace.png"
-dest_files=["res://.godot/imported/ace.png-59038d53e4721ef9848418ebc5d11ddd.ctex"]
+source_file="res://20250509_183332.png"
+dest_files=["res://.godot/imported/20250509_183332.png-80a1953f125901442e7f04357960b6a2.ctex"]
 
 [params]
 

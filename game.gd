@@ -1,5 +1,7 @@
 extends Node
 
+@onready var multiplayer_id = multiplayer.get_unique_id()
+
 # Game nodes
 var turn_indicator: Node
 var round_label: Label
@@ -9,14 +11,14 @@ var liar_button: Button
 var timer_label: Label
 var turn_timer: Timer
 var round_card: Sprite2D
-var table_area: Node
+var background: HBoxContainer
 
 # Card configuration
 const MAIN_DECK_TYPES = ["king", "queen", "ace", "joker"]
 const MAIN_DECK_COUNTS = {
-	"king": 5,
-	"queen": 5,
-	"ace": 5,
+	"king": 6,
+	"queen": 6,
+	"ace": 6,
 	"joker": 2
 }
 
@@ -29,12 +31,12 @@ func _ready():
 	turn_indicator = $Turn
 	round_label = $UI/Rounds
 	hand_container = $Hand
-	table_area = $Table
 	pass_button = $Pass
 	liar_button = $Liar
 	timer_label = $UI/TurnTimer/TimerLabel
 	turn_timer = $UI/TurnTimer
 	round_card = $Deck/RoundCard
+	background = $Table_Hand
 
 	pass_button.pressed.connect(_on_PassButton_pressed)
 	liar_button.pressed.connect(_on_LiarButton_pressed)
@@ -73,10 +75,24 @@ func start_round():
 		var card_button := TextureButton.new()
 		card_button.name = "%s_card_%d" % [card_type, i]
 		card_button.texture_normal = card_tex
-		card_button.position = Vector2(i * card_spacing, 0)
 		card_button.pressed.connect(_on_Card_pressed.bind(card_button))
-		hand_container.add_child(card_button)
-		hand_cards.append(card_button)
+
+		# Set up scaling inside a wrapper
+		var wrapper = Control.new()
+		wrapper.custom_minimum_size = Vector2(50, 75)  # Desired size inside HBox
+		card_button.scale = Vector2(0.34, 0.34)
+		card_button.position = Vector2.ZERO
+		card_button.anchor_left = 0
+		card_button.anchor_top = 0
+		card_button.anchor_right = 0
+		card_button.anchor_bottom = 0
+		card_button.size_flags_horizontal = Control.SIZE_FILL
+		card_button.size_flags_vertical = Control.SIZE_FILL
+
+		wrapper.add_child(card_button)
+		hand_container.add_child(wrapper)
+		hand_cards.append(card_button)  # Still store only the card itself
+
 
 	pass_button.show()
 	liar_button.show()
@@ -85,12 +101,13 @@ func start_round():
 	turn_timer.start()
 
 func _on_Card_pressed(button):
+	var c = Color.from_hsv(30.0 / 360.0, 0.5, 1.0)
 	if selected_cards.has(button):
 		selected_cards.erase(button)
 		button.modulate = Color(1, 1, 1)
 	else:
 		selected_cards.append(button)
-		button.modulate = Color(1, 0.5, 0)  # Orange glow
+		button.modulate = c   # Orange glow
 
 func _on_PassButton_pressed():
 	if selected_cards.is_empty():
@@ -101,23 +118,10 @@ func _on_PassButton_pressed():
 		var card = selected_cards[i]
 		card.texture_normal = load("res://cards/back.png")
 		card.modulate = Color(1, 1, 1)
-
-		# Make card slightly larger
-		card.scale = Vector2(1.3, 1.3)  # Adjust the scale as needed
-		
-
 		# Move from hand to table
 		hand_container.remove_child(card)
-		table_area.add_child(card)
+		background.add_child(card)
 		
-		var card_width = 20
-		var spacing = 200
-		var base_x = -310
-		var base_y = -350
-
-		# Position card more to the left (-100 for offset) and slightly higher
-		card.position = Vector2(base_x + i * (card_width + spacing), base_y)
-
 	selected_cards.clear()
 	pass_button.hide()
 	liar_button.hide()
@@ -136,4 +140,3 @@ func _on_TurnTimer_timeout():
 		turn_timer.stop()
 		pass_button.hide()
 		liar_button.hide()
-

@@ -1,42 +1,37 @@
-[gd_scene load_steps=15 format=3 uid="uid://b7wh5dqyj0oj2"]
+[gd_scene load_steps=17 format=3 uid="uid://b7wh5dqyj0oj2"]
 
-[ext_resource type="Texture2D" uid="uid://b3ayx8jwsdy50" path="res://3c15ffbef1b0890.png" id="1_bl2a4"]
 [ext_resource type="Script" path="res://game.gd" id="1_om64c"]
 [ext_resource type="Texture2D" uid="uid://ddney0g52ah7v" path="res://mag.png" id="2_8j16d"]
-[ext_resource type="Texture2D" uid="uid://bcbobrvvpbt1p" path="res://cards/back.png" id="2_gp8go"]
+[ext_resource type="Texture2D" uid="uid://cbuip1j2sgkjq" path="res://cards/back.png" id="2_gp8go"]
+[ext_resource type="Texture2D" uid="uid://b402qap4bsy0e" path="res://background.jpg" id="2_uvkbl"]
+[ext_resource type="Texture2D" uid="uid://cnmo215prcopy" path="res://20250509_183332.png" id="3_nixtt"]
 [ext_resource type="Texture2D" uid="uid://p8hq6g6v1mhy" path="res://Turn.png" id="3_ur12f"]
+[ext_resource type="Texture2D" uid="uid://cig4wywgx2v0v" path="res://20250509_192501.png" id="4_s4jyx"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dhp1c"]
 font_size = 24
-font_color = Color(0.187176, 0.187176, 0.187176, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_jo3sb"]
 font_size = 24
-font_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n3puh"]
-bg_color = Color(0.244116, 0.558875, 0.236853, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1ywnr"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyv0k"]
-bg_color = Color(0.27451, 0.627451, 0.266667, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_byfyb"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axtyn"]
-bg_color = Color(0.206878, 0.478406, 0.200421, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ad8o5"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k3fnq"]
-bg_color = Color(0.819608, 0.0705882, 0, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ehccs"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_or16h"]
-bg_color = Color(0.891291, 4.18738e-06, 8.66354e-07, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vauye"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_86jt5"]
-bg_color = Color(0.607843, 0, 0, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ynd6y"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_d8c7j"]
 font_size = 24
 font_color = Color(0, 0, 0, 1)
 
 [node name="Game" type="Node2D"]
+position = Vector2(-3, 0)
 script = ExtResource("1_om64c")
 
 [node name="UI" type="Control" parent="."]
@@ -48,12 +43,9 @@ offset_top = -360.0
 offset_right = 639.0
 offset_bottom = 360.0
 
-[node name="Background" type="ColorRect" parent="UI"]
-custom_minimum_size = Vector2(1280, 720)
-layout_mode = 0
-offset_left = -3.0
-offset_right = 1277.0
-offset_bottom = 720.0
+[node name="Background" type="Sprite2D" parent="UI"]
+position = Vector2(636, 201)
+texture = ExtResource("2_uvkbl")
 
 [node name="Rounds" type="Label" parent="UI"]
 clip_contents = true
@@ -64,10 +56,13 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 1055.0
-offset_top = -46.0
+offset_top = -44.0
 offset_right = 1266.0
-offset_bottom = -12.0
+offset_bottom = -10.0
 grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 text = "Round 1:Queens"
 label_settings = SubResource("LabelSettings_dhp1c")
 horizontal_alignment = 1
@@ -77,10 +72,13 @@ uppercase = true
 
 [node name="TimerLabel" type="Label" parent="UI/TurnTimer"]
 custom_minimum_size = Vector2(150, 150)
-offset_left = -614.0
+offset_left = -631.0
 offset_top = 316.0
-offset_right = -464.0
+offset_right = -481.0
 offset_bottom = 466.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 label_settings = SubResource("LabelSettings_jo3sb")
 
 [node name="Deck" type="Node2D" parent="."]
@@ -88,12 +86,8 @@ position = Vector2(-25, -27)
 
 [node name="RoundCard" type="Sprite2D" parent="Deck"]
 position = Vector2(545, 191)
+scale = Vector2(0.28, 0.28)
 texture = ExtResource("2_gp8go")
-
-[node name="Table" type="Sprite2D" parent="."]
-position = Vector2(6, 148)
-scale = Vector2(0.653, 0.5)
-texture = ExtResource("1_bl2a4")
 
 [node name="Hand" type="HBoxContainer" parent="."]
 custom_minimum_size = Vector2(600, 150)
@@ -103,32 +97,35 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -235.0
-offset_top = 247.0
+offset_top = 135.0
 offset_right = 365.0
-offset_bottom = 397.0
+offset_bottom = 285.0
 grow_horizontal = 2
 grow_vertical = 0
-scale = Vector2(0.85, 0.85)
+scale = Vector2(0.81, 0.81)
 theme_override_constants/separation = 10
 alignment = 1
 
 [node name="Pass" type="Button" parent="."]
 offset_left = -606.0
-offset_right = -426.0
-offset_bottom = 60.0
+offset_right = 240.0
+offset_bottom = 251.0
+scale = Vector2(0.25, 0.25)
+size_flags_stretch_ratio = 0.0
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_n3puh")
-theme_override_styles/hover = SubResource("StyleBoxFlat_uyv0k")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_axtyn")
-text = "PASS!"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1ywnr")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_byfyb")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ad8o5")
+icon = ExtResource("3_nixtt")
 
 [node name="Liar" type="Button" parent="."]
 offset_left = -606.0
-offset_top = 81.0
-offset_right = -426.0
-offset_bottom = 141.0
+offset_top = 71.0
+offset_right = 37.0
+offset_bottom = 271.0
+scale = Vector2(0.328, 0.328)
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
@@ -136,15 +133,13 @@ theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_k3fnq")
-theme_override_styles/hover = SubResource("StyleBoxFlat_or16h")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_86jt5")
-text = "LIAR!"
-icon_alignment = 1
-expand_icon = true
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ehccs")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_vauye")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ynd6y")
+icon = ExtResource("4_s4jyx")
 
 [node name="Turn" type="Sprite2D" parent="."]
-position = Vector2(-572, -183)
+position = Vector2(-555, -182)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("3_ur12f")
 
@@ -225,9 +220,9 @@ position = Vector2(408, -288)
 
 [node name="Player 3" type="ColorRect" parent="Player3"]
 custom_minimum_size = Vector2(150, 150)
-offset_left = -70.0
+offset_left = -80.0
 offset_top = -72.0
-offset_right = 80.0
+offset_right = 70.0
 offset_bottom = 78.0
 color = Color(1, 0.469582, 0.157208, 1)
 
@@ -246,3 +241,20 @@ label_settings = SubResource("LabelSettings_d8c7j")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-5, 0)
+
+[node name="Table_Hand" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(600, 150)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -32.0
+offset_right = 350.0
+offset_bottom = 118.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.85, 0.85)
+theme_override_constants/separation = 10
+alignment = 1
