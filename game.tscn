@@ -1,0 +1,248 @@
+[gd_scene load_steps=15 format=3 uid="uid://b7wh5dqyj0oj2"]
+
+[ext_resource type="Texture2D" uid="uid://b3ayx8jwsdy50" path="res://3c15ffbef1b0890.png" id="1_bl2a4"]
+[ext_resource type="Script" path="res://game.gd" id="1_om64c"]
+[ext_resource type="Texture2D" uid="uid://ddney0g52ah7v" path="res://mag.png" id="2_8j16d"]
+[ext_resource type="Texture2D" uid="uid://bcbobrvvpbt1p" path="res://cards/back.png" id="2_gp8go"]
+[ext_resource type="Texture2D" uid="uid://p8hq6g6v1mhy" path="res://Turn.png" id="3_ur12f"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_dhp1c"]
+font_size = 24
+font_color = Color(0.187176, 0.187176, 0.187176, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_jo3sb"]
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n3puh"]
+bg_color = Color(0.244116, 0.558875, 0.236853, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyv0k"]
+bg_color = Color(0.27451, 0.627451, 0.266667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_axtyn"]
+bg_color = Color(0.206878, 0.478406, 0.200421, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k3fnq"]
+bg_color = Color(0.819608, 0.0705882, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_or16h"]
+bg_color = Color(0.891291, 4.18738e-06, 8.66354e-07, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_86jt5"]
+bg_color = Color(0.607843, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_d8c7j"]
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_om64c")
+
+[node name="UI" type="Control" parent="."]
+custom_minimum_size = Vector2(1280, 720)
+layout_mode = 3
+anchors_preset = 0
+offset_left = -641.0
+offset_top = -360.0
+offset_right = 639.0
+offset_bottom = 360.0
+
+[node name="Background" type="ColorRect" parent="UI"]
+custom_minimum_size = Vector2(1280, 720)
+layout_mode = 0
+offset_left = -3.0
+offset_right = 1277.0
+offset_bottom = 720.0
+
+[node name="Rounds" type="Label" parent="UI"]
+clip_contents = true
+custom_minimum_size = Vector2(20, 20)
+layout_direction = 2
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1055.0
+offset_top = -46.0
+offset_right = 1266.0
+offset_bottom = -12.0
+grow_vertical = 0
+text = "Round 1:Queens"
+label_settings = SubResource("LabelSettings_dhp1c")
+horizontal_alignment = 1
+uppercase = true
+
+[node name="TurnTimer" type="Timer" parent="UI"]
+
+[node name="TimerLabel" type="Label" parent="UI/TurnTimer"]
+custom_minimum_size = Vector2(150, 150)
+offset_left = -614.0
+offset_top = 316.0
+offset_right = -464.0
+offset_bottom = 466.0
+label_settings = SubResource("LabelSettings_jo3sb")
+
+[node name="Deck" type="Node2D" parent="."]
+position = Vector2(-25, -27)
+
+[node name="RoundCard" type="Sprite2D" parent="Deck"]
+position = Vector2(545, 191)
+texture = ExtResource("2_gp8go")
+
+[node name="Table" type="Sprite2D" parent="."]
+position = Vector2(6, 148)
+scale = Vector2(0.653, 0.5)
+texture = ExtResource("1_bl2a4")
+
+[node name="Hand" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(600, 150)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -235.0
+offset_top = 247.0
+offset_right = 365.0
+offset_bottom = 397.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.85, 0.85)
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Pass" type="Button" parent="."]
+offset_left = -606.0
+offset_right = -426.0
+offset_bottom = 60.0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_n3puh")
+theme_override_styles/hover = SubResource("StyleBoxFlat_uyv0k")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_axtyn")
+text = "PASS!"
+
+[node name="Liar" type="Button" parent="."]
+offset_left = -606.0
+offset_top = 81.0
+offset_right = -426.0
+offset_bottom = 141.0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_k3fnq")
+theme_override_styles/hover = SubResource("StyleBoxFlat_or16h")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_86jt5")
+text = "LIAR!"
+icon_alignment = 1
+expand_icon = true
+
+[node name="Turn" type="Sprite2D" parent="."]
+position = Vector2(-572, -183)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("3_ur12f")
+
+[node name="Player0" type="AnimatedSprite2D" parent="."]
+position = Vector2(-569, -284)
+
+[node name="Player 0" type="ColorRect" parent="Player0"]
+custom_minimum_size = Vector2(150, 150)
+offset_left = -76.0
+offset_top = -76.0
+offset_right = 74.0
+offset_bottom = 74.0
+color = Color(0.928728, 0, 0.119719, 1)
+
+[node name="Magazine0" type="Sprite2D" parent="."]
+position = Vector2(-414, -283)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("2_8j16d")
+
+[node name="Label" type="Label" parent="Magazine0"]
+offset_left = -17.5
+offset_top = 55.8333
+offset_right = 30.5
+offset_bottom = 100.833
+text = "1/6"
+label_settings = SubResource("LabelSettings_d8c7j")
+
+[node name="Player1" type="AnimatedSprite2D" parent="."]
+position = Vector2(-249, -282)
+
+[node name="Player 1" type="ColorRect" parent="Player1"]
+custom_minimum_size = Vector2(150, 150)
+offset_left = -77.0
+offset_top = -78.0
+offset_right = 73.0
+offset_bottom = 72.0
+color = Color(0.406804, 0.70017, 0.951391, 1)
+
+[node name="Magazine1" type="Sprite2D" parent="."]
+position = Vector2(-87, -283)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("2_8j16d")
+
+[node name="Label2" type="Label" parent="Magazine1"]
+offset_left = -17.5
+offset_top = 55.0
+offset_right = 30.5
+offset_bottom = 100.0
+text = "1/6"
+label_settings = SubResource("LabelSettings_d8c7j")
+
+[node name="Player2" type="AnimatedSprite2D" parent="."]
+position = Vector2(80, -286)
+
+[node name="Player 2" type="ColorRect" parent="Player2"]
+custom_minimum_size = Vector2(150, 150)
+offset_left = -76.0
+offset_top = -75.0
+offset_right = 74.0
+offset_bottom = 75.0
+color = Color(0.15, 1, 0, 1)
+
+[node name="Magazine2" type="Sprite2D" parent="."]
+position = Vector2(247, -284)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("2_8j16d")
+
+[node name="Label" type="Label" parent="Magazine2"]
+offset_left = -17.5
+offset_top = 55.0
+offset_right = 30.5
+offset_bottom = 100.0
+text = "1/6"
+label_settings = SubResource("LabelSettings_d8c7j")
+
+[node name="Player3" type="AnimatedSprite2D" parent="."]
+position = Vector2(408, -288)
+
+[node name="Player 3" type="ColorRect" parent="Player3"]
+custom_minimum_size = Vector2(150, 150)
+offset_left = -70.0
+offset_top = -72.0
+offset_right = 80.0
+offset_bottom = 78.0
+color = Color(1, 0.469582, 0.157208, 1)
+
+[node name="Magazine3" type="Sprite2D" parent="."]
+position = Vector2(559, -283)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("2_8j16d")
+
+[node name="Label2" type="Label" parent="Magazine3"]
+offset_left = -19.1667
+offset_top = 55.0
+offset_right = 28.8333
+offset_bottom = 100.0
+text = "1/6"
+label_settings = SubResource("LabelSettings_d8c7j")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(-5, 0)

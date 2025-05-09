@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://chadt3b0kfvn"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = 13.0
+offset_right = 44.0
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1280, 720)
+layout_mode = 0
+offset_left = -44.0
+offset_top = -13.0
+offset_right = 1236.0
+offset_bottom = 707.0
+
+[node name="TitleMenu" type="Label" parent="."]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_left = 412.0
+offset_top = 97.0
+offset_right = 795.0
+offset_bottom = 297.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 52
+text = "Table Of Deceit"
+vertical_alignment = 1
+
+[node name="ModeButtons" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(150, 80)
+layout_mode = 0
+offset_left = 303.0
+offset_top = 273.0
+offset_right = 903.0
+offset_bottom = 353.0
+theme_override_constants/separation = 200
+alignment = 1
+
+[node name="LiarsDeck" type="Button" parent="ModeButtons"]
+layout_mode = 2
+toggle_mode = true
+text = "Liar's Deck"
+
+[node name="DevilsDeck" type="Button" parent="ModeButtons"]
+custom_minimum_size = Vector2(200, 80)
+layout_mode = 2
+toggle_mode = true
+action_mode = 0
+text = "Devil's Deck"
+
+[node name="PlayButton" type="Button" parent="."]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 0
+offset_left = 481.0
+offset_top = 378.0
+offset_right = 611.0
+offset_bottom = 428.0
+
+[node name="CharacterButton" type="Button" parent="."]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 0
+offset_left = 509.0
+offset_top = 488.0
+offset_right = 589.0
+offset_bottom = 568.0
