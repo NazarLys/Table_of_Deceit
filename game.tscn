@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://b7wh5dqyj0oj2"]
+[gd_scene load_steps=23 format=3 uid="uid://cey75vorc02tq"]
 
 [ext_resource type="Script" path="res://game.gd" id="1_om64c"]
 [ext_resource type="Texture2D" uid="uid://cxdwnsjbo71k0" path="res://mag.png" id="2_8j16d"]
@@ -28,6 +28,9 @@ outline_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_byfyb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ad8o5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y8ryv"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ehccs"]
 
@@ -98,6 +101,7 @@ label_settings = SubResource("LabelSettings_jo3sb")
 
 [node name="Output" type="Label" parent="UI"]
 custom_minimum_size = Vector2(10, 10)
+layout_mode = 0
 offset_left = 17.0
 offset_top = 504.0
 offset_right = 267.0
@@ -162,6 +166,7 @@ theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxEmpty_1ywnr")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_byfyb")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_ad8o5")
+theme_override_styles/focus = SubResource("StyleBoxFlat_y8ryv")
 icon = ExtResource("3_nixtt")
 
 [node name="Liar" type="Button" parent="."]

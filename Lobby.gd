@@ -13,7 +13,7 @@ func _on_host_button_pressed():
 	peer.create_server(12345, 4)
 	multiplayer.multiplayer_peer = peer
 	print("Server started on port 12345")
-	get_tree().change_scene_to_file("res://Game.tscn")  # Replace with your game scene path
+	get_tree().change_scene_to_file("res://game.tscn") 
 
 func _on_join_button_pressed():
 	var peer = ENetMultiplayerPeer.new()
@@ -21,4 +21,4 @@ func _on_join_button_pressed():
 	peer.create_client(ip, 12345)
 	multiplayer.multiplayer_peer = peer
 	print("Trying to join %s..." % ip)
-	get_tree().change_scene_to_file("res://.tscn")
+	get_tree().change_scene_to_file("res://game.tscn")
