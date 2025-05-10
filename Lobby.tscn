@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgk820ptpdexb"]
+
+[ext_resource type="Script" path="res://Lobby.gd" id="1_oofxy"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_oofxy")
+
+[node name="IpInput" type="LineEdit" parent="."]
+layout_mode = 0
+offset_right = 67.0625
+offset_bottom = 31.0
+
+[node name="Host" type="Button" parent="."]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 65.0
+offset_right = 207.0
+offset_bottom = 125.0
+text = "Host"
+
+[node name="Join" type="Button" parent="."]
+layout_mode = 0
+offset_left = 263.0
+offset_top = 65.0
+offset_right = 443.0
+offset_bottom = 125.0
+text = "Join"
+
+[node name="Info" type="Label" parent="."]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 144.0
+offset_right = 318.0
+offset_bottom = 167.0
+text = "Connection Status: "
