@@ -46,10 +46,15 @@ func _on_hover_exit():
 	_update_buttons()
 
 func _update_buttons():
-	# Reset to default
+	# Reset to default for all buttons
 	liars_button.modulate = Color(1, 1, 1)
 	devils_button.modulate = Color(1, 1, 1)
 	play_button.modulate = Color(1, 1, 1)
+
+	# Reset scale for all buttons
+	liars_button.scale = Vector2(0.38, 0.38)
+	devils_button.scale = Vector2(0.38, 0.38)
+	play_button.scale = Vector2(0.42, 0.42)
 
 	# Pressed effect
 	if selected_deck == "liars":
@@ -61,12 +66,11 @@ func _update_buttons():
 	if hovered_button != null:
 		if hovered_button == play_button:
 			play_button.modulate = Color(1.2, 1.2, 1.2)
-		elif get_button_deck(hovered_button) != selected_deck:
-			hovered_button.modulate = Color(1.2, 1.2, 1.2)
+			play_button.scale = Vector2(0.425, 0.425)  # Збільшення кнопки Play на 5%
+		elif hovered_button == liars_button:
+			liars_button.modulate = Color(1.2, 1.2, 1.2)
+			liars_button.scale = Vector2(0.385, 0.385)  # Збільшення кнопки LiarsDeck на 5%
+		elif hovered_button == devils_button:
+			devils_button.modulate = Color(1.2, 1.2, 1.2)
+			devils_button.scale = Vector2(0.385, 0.385)  # Збільшення кнопки DevilsDeck на 5%
 
-func get_button_deck(button: Button) -> String:
-	if button == liars_button:
-		return "liars"
-	elif button == devils_button:
-		return "devils"
-	return ""

@@ -1,11 +1,11 @@
-[gd_scene load_steps=19 format=3 uid="uid://cgk820ptpdexb"]
+[gd_scene load_steps=23 format=3 uid="uid://cgk820ptpdexb"]
 
 [ext_resource type="Script" path="res://Lobby.gd" id="1_oofxy"]
 [ext_resource type="Texture2D" uid="uid://dfdtjlenjxq4a" path="res://main_menu/photo_5260287361173023056_y.jpg" id="2_ty2de"]
 [ext_resource type="Texture2D" uid="uid://dhu0wmyutfmay" path="res://main_menu/20250510_231812.png" id="3_47vmb"]
 [ext_resource type="Texture2D" uid="uid://dx8p8gw1y8thq" path="res://main_menu/20250510_230808.png" id="4_qvb55"]
-[ext_resource type="Texture2D" uid="uid://c1vboqpf02n2j" path="res://main_menu/20250510_140446.png" id="5_poy1r"]
 [ext_resource type="Texture2D" uid="uid://dsq2tbwst0w7p" path="res://main_menu/20250510_140459.png" id="6_2tq58"]
+[ext_resource type="Texture2D" uid="uid://batjrtvxl53o3" path="res://main_menu/idiot2png.png" id="6_dghq6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fq3ng"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -41,6 +41,18 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8yyj"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oijda"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y8tt8"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3cgp8"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_565e7"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="Lobby" type="Control"]
@@ -98,21 +110,9 @@ color = Color(0, 0, 0, 1)
 
 [node name="ChangeB" type="Button" parent="."]
 layout_mode = 0
-offset_left = 1120.0
+offset_left = 737.0
 offset_top = 442.0
-offset_right = 2377.0
-offset_bottom = 886.0
-scale = Vector2(0.1, 0.1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_i6ama")
-theme_override_styles/hover = SubResource("StyleBoxFlat_pxaxo")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_f2r88")
-theme_override_styles/focus = SubResource("StyleBoxFlat_b8yyj")
-icon = ExtResource("5_poy1r")
-
-[node name="ChangeN" type="Button" parent="."]
-offset_left = 738.0
-offset_top = 442.0
-offset_right = 1996.0
+offset_right = 1995.0
 offset_bottom = 886.0
 scale = Vector2(0.1, 0.1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_i6ama")
@@ -120,3 +120,16 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_pxaxo")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_f2r88")
 theme_override_styles/focus = SubResource("StyleBoxFlat_b8yyj")
 icon = ExtResource("6_2tq58")
+
+[node name="ChangeN" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1119.0
+offset_top = 442.0
+offset_right = 2377.0
+offset_bottom = 886.0
+scale = Vector2(0.1, 0.1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_oijda")
+theme_override_styles/hover = SubResource("StyleBoxFlat_y8tt8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3cgp8")
+theme_override_styles/focus = SubResource("StyleBoxFlat_565e7")
+icon = ExtResource("6_dghq6")
