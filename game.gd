@@ -12,6 +12,7 @@ var timer_label: Label
 var turn_timer: Timer
 var round_card: Sprite2D
 var table_area: Sprite2D  
+@onready var output_label: Label = $UI/Output  # Reference to output label
 
 # Card configuration
 const MAIN_DECK_TYPES = ["king", "queen", "ace", "joker"]
@@ -27,9 +28,12 @@ var hand_cards: Array = []
 var selected_cards: Array = []
 var turn_time_left: int = 60
 
-# Координати центру столу, який має розмір 1280x720
-var table_center_x: float = -641  # Центр столу по X
-var table_center_y: float = -360  # Центр столу по Y
+# Coordinates for center of the table with assumed size 1280x720
+var table_center_x: float = -641  # Table center X
+var table_center_y: float = -360  # Table center Y
+
+# Store log lines for output label
+var log_lines: Array = []
 
 func _ready():
 	turn_indicator = $Turn
@@ -50,6 +54,23 @@ func _ready():
 	turn_timer.start()
 
 	start_round()
+
+func log_message(msg: String):
+	log_lines.append(msg)
+	if log_lines.size() > 3:
+		log_lines.remove_at(0)
+	output_label.text = "\n".join(log_lines)
+	output_label.modulate.a = 1.0  # Reset alpha every time
+
+	# Tween to fade only the last message
+	var tween := create_tween()
+	tween.tween_property(output_label, "modulate:a", 0.0, 1.0).set_delay(1.0)
+	tween.finished.connect(func():
+		if log_lines.has(msg) and log_lines[-1] == msg:
+			log_lines.remove_at(log_lines.size() - 1)
+			output_label.text = "\n".join(log_lines)
+			output_label.modulate.a = 1.0
+	)
 
 func start_round():
 	var table_deck = ["king", "queen", "ace"]
@@ -108,7 +129,7 @@ func _on_Card_pressed(button):
 
 func _on_PassButton_pressed():
 	if selected_cards.is_empty():
-		print("No cards selected!")
+		log_message("No cards selected!")
 		return
 
 	var card_scale = 0.25
@@ -116,28 +137,24 @@ func _on_PassButton_pressed():
 	var spacing = 150
 	var total_width = selected_cards.size() * card_width + (selected_cards.size() - 1) * spacing
 
-	# Використовуємо координати для правильного центрованого позиціонування карт
-	var base_x = table_center_x + 640  # 640 - це половина ширини столу (1280 / 2)
-	var base_y = table_center_y + 360  # 360 - це половина висоти столу (720 / 2)
+	# Use coordinates for properly centered card placement
+	var base_x = table_center_x + 640  # 640 is half the table width (1280 / 2)
+	var base_y = table_center_y + 330  # Slightly higher than bottom (adjusted)
+	var center_offset = (1280 - total_width) / 2
 
-	# Вираховуємо центральну точку для карт
-	var center_offset = (1280 - total_width) / 2  # Обчислюємо центр для карт, використовуючи ширину столу (1280)
-
-	# Розташовуємо карти по центру
+	# Position cards in center
 	for i in range(selected_cards.size()):
 		var card = selected_cards[i]
 		card.texture_normal = load("res://cards/back.png")
 		card.modulate = Color(1, 1, 1)
 		card.scale = Vector2(card_scale, card_scale)
 
-		# Видаляємо картки з обгортки
 		var wrapper = card.get_parent()
 		if wrapper and wrapper.get_parent() == hand_container:
 			wrapper.remove_child(card)
 			hand_container.remove_child(wrapper)
 
 		add_child(card)
-		# Визначаємо координати карт
 		var x_position = base_x + center_offset + i * (card_width + spacing)
 		card.global_position = Vector2(x_position, base_y)
 
@@ -146,7 +163,7 @@ func _on_PassButton_pressed():
 	liar_button.hide()
 
 func _on_LiarButton_pressed():
-	print("LIAR called!")
+	log_message("LIAR called!")
 	pass_button.hide()
 	liar_button.hide()
 
@@ -155,7 +172,7 @@ func _on_TurnTimer_timeout():
 		turn_time_left -= 1
 		timer_label.text = str("Time left: %s" % turn_time_left)
 	else:
-		print("Turn timed out")
+		log_message("Turn timed out")
 		turn_timer.stop()
 		pass_button.hide()
 		liar_button.hide()
