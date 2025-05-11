@@ -1,0 +1,56 @@
+[gd_scene load_steps=8 format=3 uid="uid://c7yi0b35qviml"]
+
+[ext_resource type="Texture2D" uid="uid://dfdtjlenjxq4a" path="res://main_menu/photo_5260287361173023056_y.jpg" id="1_6svi7"]
+[ext_resource type="Script" path="res://host.gd" id="1_wp58x"]
+[ext_resource type="Texture2D" uid="uid://c1x1tje3vjx48" path="res://lob.png" id="2_43t7d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_amfan"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1lpl"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ggvv"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l6atf"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="host" type="Node2D"]
+script = ExtResource("1_wp58x")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+top_level = true
+position = Vector2(640, 360)
+
+[node name="ColorRectHost" type="Sprite2D" parent="."]
+position = Vector2(640, 560)
+texture = ExtResource("1_6svi7")
+
+[node name="GeneratePortButton" type="Button" parent="."]
+offset_left = 152.0
+offset_top = 403.0
+offset_right = 1065.0
+offset_bottom = 705.0
+scale = Vector2(0.3, 0.3)
+theme_override_styles/normal = SubResource("StyleBoxFlat_amfan")
+theme_override_styles/hover = SubResource("StyleBoxFlat_l1lpl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1ggvv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_l6atf")
+icon = ExtResource("2_43t7d")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 632.0
+offset_top = 414.0
+offset_right = 681.0
+offset_bottom = 448.0
+scale = Vector2(2, 2)
+text = "Port"
+label_settings = null
+
+[node name="PortLabel" type="Label" parent="."]
+offset_left = 848.0
+offset_top = 432.0
+offset_right = 984.0
+offset_bottom = 496.0
+text = "ТУТ ПОРТ КОД"

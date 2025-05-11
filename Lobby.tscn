@@ -101,6 +101,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_68ajv")
 icon = ExtResource("4_qvb55")
 
 [node name="Player 0" type="ColorRect" parent="."]
+layout_mode = 0
 offset_left = 896.0
 offset_top = 368.0
 offset_right = 1056.0

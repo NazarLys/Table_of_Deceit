@@ -31,7 +31,7 @@ func _on_host_button_pressed():
 	peer.create_server(12345, 4)
 	multiplayer.multiplayer_peer = peer
 	print("Server started on port 12345")
-	get_tree().change_scene_to_file("res://game.tscn") 
+	get_tree().change_scene_to_file("res://host.tscn") 
 
 # Обробка натискання на кнопку Join
 func _on_join_button_pressed():
