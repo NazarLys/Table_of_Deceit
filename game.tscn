@@ -238,7 +238,7 @@ position = Vector2(-78, -295)
 scale = Vector2(2, 2)
 texture = ExtResource("2_8j16d")
 
-[node name="Label2" type="Label" parent="Magazine1"]
+[node name="Label" type="Label" parent="Magazine1"]
 offset_left = -9.30001
 offset_top = 27.0
 offset_right = 38.7
@@ -289,7 +289,7 @@ position = Vector2(562, -294)
 scale = Vector2(2, 2)
 texture = ExtResource("2_8j16d")
 
-[node name="Label2" type="Label" parent="Magazine3"]
+[node name="Label" type="Label" parent="Magazine3"]
 offset_left = -9.0
 offset_top = 27.0
 offset_right = 39.0

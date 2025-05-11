@@ -1,41 +1,19 @@
-extends Node
+extends Control
 
-@onready var generate_port_button: Button = $GeneratePortButton
-@onready var port_label: Label = $PortLabel
-
-var server_port: int = 0
-var multiplayer_peer: ENetMultiplayerPeer = null
+@onready var start_button = $Start_Button
+@onready var port_input = $PortLabel
+@onready var output_label = $Label
 
 func _ready():
-	# Підключаємо сигнал кнопки
-	generate_port_button.pressed.connect(_on_generate_port_pressed)
+	start_button.pressed.connect(_start_game)
 
-func _on_generate_port_pressed():
-	randomize()
-	server_port = randi() % 10000 + 1024
-
-	# Виведення порту на екран
-	port_label.text = "🔌 Порт сервера: " + str(server_port)
-
-	# Створення мережевого сервера
-	multiplayer_peer = ENetMultiplayerPeer.new()
-	var error = multiplayer_peer.create_server(server_port, 32)  # Вказуємо максимальну кількість клієнтів
-
-	if error != OK:
-		# Якщо помилка при створенні сервера
-		port_label.text += "\n❌ Помилка створення сервера!"
-		print("❌ Помилка під час створення сервера:", error)
-	else:
-		# Налаштовуємо multiplayer_peer після створення сервера
-		get_tree().multiplayer.network_peer = multiplayer_peer  # Підключаємо до multiplayer
-		get_tree().multiplayer.peer_connected.connect(_on_peer_connected)
-		get_tree().multiplayer.peer_disconnected.connect(_on_peer_disconnected)
-		print("✅ Сервер створено на порту:", server_port)
-
-# Обробка підключення нових гравців
-func _on_peer_connected(id: int):
-	print("🎮 Гравець підключився! ID: ", id)
-
-# Обробка відключення гравців
-func _on_peer_disconnected(id: int):
-	print("👋 Гравець відключився! ID: ", id)
+func _start_game():
+	if port_input.text == "":
+		output_label.text = "Enter port before hosting!"
+		return
+	var port = int(port_input.text)
+	var peer = ENetMultiplayerPeer.new()
+	peer.create_server(port, Global.max_players)
+	multiplayer.multiplayer_peer = peer
+	Global.peer_to_seat[multiplayer.get_unique_id()] = 0
+	get_tree().change_scene_to_file("res://game.tscn")

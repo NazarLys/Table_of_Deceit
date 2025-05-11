@@ -10,8 +10,11 @@ var hovered_button: Button = null
 func _ready():
 	# Connect pressed signals
 	liars_button.pressed.connect(_on_liars_pressed)
+	liars_button.pressed.connect(func(): Global.game_mode = "liar")
 	devils_button.pressed.connect(_on_devils_pressed)
+	devils_button.pressed.connect(func(): Global.game_mode = "devil")
 	play_button.pressed.connect(_on_play_pressed)
+
 
 	# Connect hover signals
 	liars_button.mouse_entered.connect(func(): _on_hover(liars_button))
@@ -33,7 +36,7 @@ func _on_devils_pressed():
 
 func _on_play_pressed():
 	if selected_deck == "":
-		print("⚠️ Please select a deck before starting the game!")
+		print("Please select a game mode before starting the game!")
 		return
 	get_tree().change_scene_to_file("res://Lobby.tscn")
 
