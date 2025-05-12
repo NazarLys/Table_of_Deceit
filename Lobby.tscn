@@ -69,12 +69,12 @@ position = Vector2(640, 360)
 position = Vector2(640, 560)
 texture = ExtResource("2_ty2de")
 
-[node name="IpInput" type="LineEdit" parent="."]
+[node name="EnterCode" type="LineEdit" parent="."]
 offset_left = 423.0
 offset_top = 524.0
 offset_right = 623.0
 offset_bottom = 574.0
-placeholder_text = "Enter the room IP:"
+placeholder_text = "Enter the room code:"
 
 [node name="Host" type="Button" parent="."]
 offset_left = 149.0
@@ -126,9 +126,9 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_b8yyj")
 icon = ExtResource("6_2tq58")
 
 [node name="ChangeRight" type="Button" parent="."]
-offset_left = 1119.0
+offset_left = 1121.0
 offset_top = 442.0
-offset_right = 2377.0
+offset_right = 2379.0
 offset_bottom = 886.0
 scale = Vector2(0.1, 0.1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_oijda")
@@ -136,3 +136,10 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_y8tt8")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_3cgp8")
 theme_override_styles/focus = SubResource("StyleBoxFlat_565e7")
 icon = ExtResource("6_dghq6")
+
+[node name="StatusLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 973.0
+offset_top = 610.0
+offset_right = 1273.0
+offset_bottom = 710.0

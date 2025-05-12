@@ -1,237 +1,161 @@
-# game.gd — Full Multiplayer Game Script (Godot 4.x compatible)
 extends Node
 
-# === AUTOLOADED SINGLETON ===
-var global := Global
+@onready var multiplayer_id = multiplayer.get_unique_id()
 
-# === CONSTANTS ===
-const CARD_TYPES = ["king", "queen", "ace", "joker"]
-const CARD_COUNTS = {"king": 6, "queen": 6, "ace": 6, "joker": 2}
+# Game nodes
+var turn_indicator: Node
+var round_label: Label
+var hand_container: Node
+var pass_button: Button
+var liar_button: Button
+var timer_label: Label
+var turn_timer: Timer
+var round_card: Sprite2D
+var table_area: Sprite2D  
 
-# === NODE REFERENCES ===
-@onready var turn_label = $Turn
-@onready var round_label = $UI/Rounds
-@onready var round_card_sprite = $Deck/RoundCard
-@onready var output_label = $UI/Output
-@onready var timer_label = $UI/TurnTimer/TimerLabel
-@onready var turn_timer = $UI/TurnTimer
-@onready var pass_button = $Pass
-@onready var liar_button = $Liar
-@onready var hand_container = $Hand
-@onready var player_sprites = [$Player0, $Player1, $Player2, $Player3]
-@onready var magazine_labels = [$Magazine0/Label, $Magazine1/Label, $Magazine2/Label, $Magazine3/Label]
+# Card configuration
+const MAIN_DECK_TYPES = ["king", "queen", "ace", "joker"]
+const MAIN_DECK_COUNTS = {
+	"king": 6,
+	"queen": 6,
+	"ace": 6,
+	"joker": 2
+}
 
-# === GAME STATE ===
-var player_seat = -1
-var current_turn = -1
-var turn_order: Array[int] = []
-var alive = [false, false, false, false]
-var bullet_chambers = [1, 1, 1, 1]
-var round_target_card = ""
+# Game state
+var hand_cards: Array = []
+var selected_cards: Array = []
+var turn_time_left: int = 60
 
-var player_hands = {}
-var selected_cards: Array[TextureButton] = []
-var table_history = []
-var client_has_selection = {}
-var client_selected_indices = {}
-var turn_time_left = 60
+# Координати центру столу, який має розмір 1280x720
+var table_center_x: float = -641  # Центр столу по X
+var table_center_y: float = -360  # Центр столу по Y
 
 func _ready():
-	turn_label.text = ""
-	pass_button.hide()
-	liar_button.hide()
+	turn_indicator = $Turn
+	round_label = $UI/Rounds
+	hand_container = $Hand
+	pass_button = $Pass
+	liar_button = $Liar
+	timer_label = $UI/TurnTimer/TimerLabel
+	turn_timer = $UI/TurnTimer
+	round_card = $Deck/RoundCard
+	table_area = $UI/Background  
+
+	pass_button.pressed.connect(_on_PassButton_pressed)
+	liar_button.pressed.connect(_on_LiarButton_pressed)
 	turn_timer.timeout.connect(_on_TurnTimer_timeout)
-
-	if multiplayer.is_server():
-		player_seat = 0
-		var peers = [multiplayer.get_unique_id()]
-		peers.append_array(Array(multiplayer.get_peers()))
-		for i in range(peers.size()):
-			global.peer_to_seat[peers[i]] = i
-			global.character_selections[peers[i]] = global.character_selections.get(peers[i], i % 4)
-			alive[i] = true
-			turn_order.append(i)
-			rpc_id(peers[i], "assign_seat", i, global.character_selections[peers[i]])
-			update_character_sprite(i, global.character_selections[peers[i]])
-		start_new_round()
-	else:
-		player_seat = -1
-
-@rpc("any_peer")
-func assign_seat(seat: int, char_id: int):
-	player_seat = seat
-	alive[seat] = true
-	update_character_sprite(seat, char_id)
-
-func update_character_sprite(seat: int, char_id: int):
-	player_sprites[seat].texture = load("res://characters/character%d.png" % char_id)
-
-func start_new_round():
-	var rng = RandomNumberGenerator.new()
-	rng.randomize()
-	round_target_card = ["king", "queen", "ace"].pick_random()
-	rpc("broadcast_round", round_target_card)
-	broadcast_round(round_target_card)
-	deal_cards()
-
-@rpc("any_peer")
-func broadcast_round(card: String):
-	round_target_card = card
-	round_label.text = "Round: %s" % card.capitalize()
-	round_card_sprite.texture = load("res://cards/%s.png" % card)
-	table_history.clear()
-	for m in magazine_labels:
-		m.text = "1/6"
-	bullet_chambers = [1, 1, 1, 1]
-
-func deal_cards():
-	var full_deck = []
-	for type in CARD_TYPES:
-		for i in range(CARD_COUNTS[type]):
-			full_deck.append(type)
-	full_deck.shuffle()
-	
-func _peer_for_seat(seat: int) -> int:
-	for peer_id in global.peer_to_seat:
-		if global.peer_to_seat[peer_id] == seat:
-			return peer_id
-	return 1  # fallback to host (useful during debug)
-	
-	player_hands.clear()
-	for player_seat_id in turn_order:
-		player_hands[seat] = []
-		
-
-	current_turn = turn_order[0]
-	send_turn(current_turn)
-
-@rpc("any_peer")
-func receive_hand(seat: int, cards: Array):
-	if seat != player_seat:
-		return
-	hand_container.clear()
-	selected_cards.clear()
-	for i in range(cards.size()):
-		var card = cards[i]
-		var tex = load("res://cards/%s.png" % card)
-		var btn = TextureButton.new()
-		btn.texture_normal = tex
-		btn.pressed.connect(func(): _toggle_card(btn))
-		hand_container.add_child(btn)
-		selected_cards.append(btn)
-
-func _toggle_card(btn):
-	btn.modulate = btn.modulate == Color(1, 1, 1) if Color(1, 0.5, 0) else Color(1, 1, 1)
-
-func send_turn(seat):
-	current_turn = seat
-	rpc("set_turn", seat, bullet_chambers[seat])
-	set_turn(seat, bullet_chambers[seat])
-
-@rpc("any_peer")
-func set_turn(seat: int, bullet: int):
-	current_turn = seat
-	magazine_labels[seat].text = "%d/6" % bullet
-	turn_label.text = "Your Turn" if seat == player_seat else ""
-	var positions = [
-	Vector2(-618, -201),
-	Vector2(-294, -201),
-	Vector2(25, -201),
-	Vector2(345, -201)]
-	turn_label.position = positions[seat]
-	var show_ui = (seat == player_seat)
-	pass_button.visible = show_ui
-	liar_button.visible = show_ui
-	turn_time_left = 60
-	timer_label.text = "Time: %d" % turn_time_left
+	turn_timer.wait_time = 1.0
+	turn_timer.one_shot = false
 	turn_timer.start()
 
+	start_round()
+
+func start_round():
+	var table_deck = ["king", "queen", "ace"]
+	var chosen_card = table_deck.pick_random()
+	round_label.text = "Current Round: \n %s" % chosen_card.capitalize()
+	round_card.texture = load("res://cards/%s.png" % chosen_card)
+
+	hand_cards.clear()
+	hand_container.get_children().map(func(c): c.queue_free())
+	selected_cards.clear()
+
+	var full_deck = []
+	for type in MAIN_DECK_TYPES:
+		for i in MAIN_DECK_COUNTS[type]:
+			full_deck.append(type)
+	full_deck.shuffle()
+
+	for i in range(5):
+		var card_type: String = full_deck.pop_back()
+		var card_tex: Texture2D = load("res://cards/%s.png" % card_type)
+		var card_button := TextureButton.new()
+		card_button.name = "%s_card_%d" % [card_type, i]
+		card_button.texture_normal = card_tex
+		card_button.pressed.connect(_on_Card_pressed.bind(card_button))
+
+		var wrapper = Control.new()
+		wrapper.custom_minimum_size = Vector2(50, 75)
+		card_button.scale = Vector2(0.3, 0.3)
+		card_button.position = Vector2.ZERO
+		card_button.anchor_left = 0
+		card_button.anchor_top = 0
+		card_button.anchor_right = 0
+		card_button.anchor_bottom = 0
+		card_button.size_flags_horizontal = Control.SIZE_FILL
+		card_button.size_flags_vertical = Control.SIZE_FILL
+		var card_spacing: float = 140
+		hand_container.add_theme_constant_override("separation", card_spacing)
+		wrapper.add_child(card_button)
+		hand_container.add_child(wrapper)
+		hand_cards.append(card_button)
+
+	pass_button.show()
+	liar_button.show()
+	turn_time_left = 60
+	timer_label.text = str("Time left: %s" % turn_time_left)
+	turn_timer.start()
+
+func _on_Card_pressed(button):
+	var c = Color.from_hsv(30.0 / 360.0, 0.5, 1.0)
+	if selected_cards.has(button):
+		selected_cards.erase(button)
+		button.modulate = Color(1, 1, 1)
+	else:
+		selected_cards.append(button)
+		button.modulate = c
+
+func _on_PassButton_pressed():
+	if selected_cards.is_empty():
+		print("No cards selected!")
+		return
+
+	var card_scale = 0.25
+	var card_width = 50 * card_scale
+	var spacing = 150
+	var total_width = selected_cards.size() * card_width + (selected_cards.size() - 1) * spacing
+
+	# Використовуємо координати для правильного центрованого позиціонування карт
+	var base_x = table_center_x + 640  # 640 - це половина ширини столу (1280 / 2)
+	var base_y = table_center_y + 360  # 360 - це половина висоти столу (720 / 2)
+
+	# Вираховуємо центральну точку для карт
+	var center_offset = (1280 - total_width) / 2  # Обчислюємо центр для карт, використовуючи ширину столу (1280)
+
+	# Розташовуємо карти по центру
+	for i in range(selected_cards.size()):
+		var card = selected_cards[i]
+		card.texture_normal = load("res://cards/back.png")
+		card.modulate = Color(1, 1, 1)
+		card.scale = Vector2(card_scale, card_scale)
+
+		# Видаляємо картки з обгортки
+		var wrapper = card.get_parent()
+		if wrapper and wrapper.get_parent() == hand_container:
+			wrapper.remove_child(card)
+			hand_container.remove_child(wrapper)
+
+		add_child(card)
+		# Визначаємо координати карт
+		var x_position = base_x + center_offset + i * (card_width + spacing)
+		card.global_position = Vector2(x_position, base_y)
+
+	selected_cards.clear()
+	pass_button.hide()
+	liar_button.hide()
+
+func _on_LiarButton_pressed():
+	print("LIAR called!")
+	pass_button.hide()
+	liar_button.hide()
+
 func _on_TurnTimer_timeout():
-	turn_time_left -= 1
-	timer_label.text = "Time: %d" % turn_time_left
-	if turn_time_left <= 0:
+	if turn_time_left > 0:
+		turn_time_left -= 1
+		timer_label.text = str("Time left: %s" % turn_time_left)
+	else:
+		print("Turn timed out")
 		turn_timer.stop()
-		if selected_cards.size() > 0:
-			_on_Pass_pressed()
-		else:
-			_on_Liar_pressed()
-
-func _on_Pass_pressed():
-	if !multiplayer.is_server():
-		rpc_id(1, "player_pass_request", _get_selected_card_indices())
-	else:
-		perform_pass(player_seat, _get_selected_card_indices())
-
-func _on_Liar_pressed():
-	if !multiplayer.is_server():
-		rpc_id(1, "player_liar_request")
-	else:
-		perform_liar_call(player_seat)
-
-@rpc("authority")
-func player_pass_request(indices: Array):
-	var pid = multiplayer.get_remote_sender_id()
-	var seat = global.peer_to_seat[pid]
-	perform_pass(seat, indices)
-
-@rpc("authority")
-func player_liar_request():
-	var pid = multiplayer.get_remote_sender_id()
-	var seat = global.peer_to_seat[pid]
-	perform_liar_call(seat)
-
-func perform_pass(seat: int, indices: Array):
-	if indices.is_empty():
-		return
-	var passed = []
-	for i in indices:
-		if i < player_hands[seat].size():
-			passed.append(player_hands[seat][i])
-			player_hands[seat].remove_at(i)
-	# store entry
-	table_history.append({"seat": seat, "cards": passed})
-	bullet_chambers[seat] += 1
-	advance_turn()
-
-func perform_liar_call(caller: int):
-	if table_history.is_empty():
-		return
-	var last = table_history.back()
-	var liar = false
-	for c in last.cards:
-		if c != round_target_card and c != "joker":
-			liar = true
-	if global.game_mode == "devil" and "joker" in last.cards:
-		for i in range(4):
-			if i != last.seat and alive[i]:
-				if bullet_chambers[i] >= randi() % 6 + 1:
-					eliminate(i)
-	else:
-		if liar:
-			eliminate(last.seat)
-		else:
-			eliminate(caller)
-	start_new_round()
-
-func eliminate(seat):
-	alive[seat] = false
-	player_sprites[seat].modulate = Color(0.5, 0.5, 0.5)
-	magazine_labels[seat].text = ""
-	if current_turn == seat:
-		advance_turn()
-
-func advance_turn():
-	var i = turn_order.find(current_turn)
-	for j in range(1, 5):
-		var s = turn_order[(i + j) % 4]
-		if alive[s]:
-			send_turn(s)
-			return
-
-func _get_selected_card_indices():
-	var indices = []
-	for i in range(hand_container.get_child_count()):
-		var card = hand_container.get_child(i)
-		if card.modulate != Color(1, 1, 1):
-			indices.append(i)
-	return indices
+		pass_button.hide()
+		liar_button.hide()
