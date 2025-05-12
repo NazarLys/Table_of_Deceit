@@ -19,11 +19,15 @@ var character_images: Array[Texture2D] = [
 	preload("res://characters/character3.png")
 ]
 
+# New variables to track room code and game start state
+var current_room_code: String = ""  
+var game_started: bool = false
+
 var socket := WebSocketPeer.new()
-var signaling_url := "wss://tableofdeceitserver.glitch.me" 
+var signaling_url := "wss://tableofdeceitserver.glitch.me"  # WebSocket signaling server URL
 var my_peer_id = 0
-var rtc_multiplayer : WebRTCMultiplayerPeer
-var connections = {}
+var rtc_multiplayer: WebRTCMultiplayerPeer
+var connections: Dictionary = {}
 var _pending_room_code = null
 
 func _ready():
@@ -42,28 +46,33 @@ func setup_ui_signals():
 	join_button.mouse_exited.connect(_on_hover_exit)
 	changeb_button.mouse_entered.connect(func(): _on_hover(changeb_button))
 	changeb_button.mouse_exited.connect(_on_hover_exit)
-	changen_button.mouse_entered.connect(func(): _on_hover(changen_button))
-	changen_button.mouse_exited.connect(_on_hover_exit)
-	
+
 func update_character_sprite():
 	character_sprite.texture = character_images[current_character_index]
-	
+
 func _process(delta):
 	if socket:
 		socket.poll()
 		var state = socket.get_ready_state()
 		if state == WebSocketPeer.STATE_OPEN:
 			if _pending_room_code != null:
+				# Send room code (or empty string for host) once connected
 				var msg = {"id": 0, "type": 0, "data": _pending_room_code}
 				socket.send_text(JSON.stringify(msg))
 				_pending_room_code = null
+			# Handle incoming signaling messages
 			while socket.get_available_packet_count() > 0:
 				var pkt = socket.get_packet().get_string_from_utf8()
 				_handle_signaling_message(pkt)
 		elif state == WebSocketPeer.STATE_CLOSED:
-			if my_peer_id != 0:
+			# Handle unexpected disconnects or failed connections
+			if my_peer_id == 0:
+				status_label.text = "Failed to connect. Room may not exist."
+			elif my_peer_id != 1:
+				status_label.text = "Room closed or host disconnected."
+			else:
 				status_label.text = "Disconnected from signaling server."
-				my_peer_id = 0
+			my_peer_id = 0
 
 func _on_HostButton_pressed():
 	status_label.text = "Connecting as host..."
@@ -79,15 +88,16 @@ func _on_JoinButton_pressed():
 
 func connect_to_signaling(room_code: String):
 	var err = socket.connect_to_url(signaling_url)
+	if room_code != "":
+		current_room_code = room_code  # Remember the code user entered
 	if err != OK:
 		status_label.text = "[Error] Could not initiate WebSocket connection."
 		return
-	_pending_room_code = room_code
+	_pending_room_code = room_code  # This will be sent once the WebSocket is open
 
 func _handle_signaling_message(msg_text: String):
 	var json = JSON.new()
-	var parse_result = json.parse(msg_text)
-	if parse_result != OK:
+	if json.parse(msg_text) != OK:
 		return
 	var message = json.get_data()
 	if message == null:
@@ -98,13 +108,17 @@ func _handle_signaling_message(msg_text: String):
 
 	match msg_type:
 		0:
-			status_label.text = "Joined room %s." % data
+			# Received a room code from server (host created a room)
+			current_room_code = String(data)
+			status_label.text = "Room code: %s (waiting for ID...)" % current_room_code
 		1:
+			# Received our peer ID from server
 			my_peer_id = int(data)
 			if my_peer_id == 1:
-				status_label.text = "Hosting room. Code: %s" % data
+				status_label.text = "Hosting room. Code: %s" % current_room_code
 			else:
-				status_label.text = "Joined as peer #%d." % my_peer_id
+				status_label.text = "Joined as peer #%d in room %s." % [my_peer_id, current_room_code]
+			# Initialize WebRTC multiplayer peer (server for host, client for others)
 			rtc_multiplayer = WebRTCMultiplayerPeer.new()
 			if my_peer_id == 1:
 				rtc_multiplayer.create_server()
@@ -112,10 +126,11 @@ func _handle_signaling_message(msg_text: String):
 				rtc_multiplayer.create_client(my_peer_id)
 			get_tree().multiplayer.multiplayer_peer = rtc_multiplayer
 		2:
+			# New peer wants to connect; start WebRTC handshake
 			if !connections.has(from_id):
-				var is_initiator = my_peer_id == 1
-				_start_webrtc_handshake(from_id, is_initiator)
+				_start_webrtc_handshake(from_id, is_initiator = (my_peer_id == 1))
 		3:
+			# Peer disconnected
 			if connections.has(from_id):
 				rtc_multiplayer.remove_peer(from_id)
 				connections.erase(from_id)
@@ -139,13 +154,13 @@ func _start_webrtc_handshake(peer_id: int, is_initiator: bool):
 	if err != OK:
 		push_error("Failed to add WebRTC peer: %s" % err)
 	if is_initiator:
-		pc.create_data_channel("game", {})
+		pc.create_data_channel("game", {})  # Only host creates the data channel
 		pc.create_offer()
 
 func _on_local_description_created(peer_id: int, type: String, sdp: String):
 	var pc: WebRTCPeerConnection = connections[peer_id]
 	pc.set_local_description(type, sdp)
-	var msg_type = 4 if type == "offer" else 5
+	var msg_type = (type == "offer") ? 4 : 5
 	var msg = {"id": peer_id, "type": msg_type, "data": sdp}
 	socket.send_text(JSON.stringify(msg))
 
@@ -165,23 +180,26 @@ func _on_received_answer(from_id: int, sdp_answer: String):
 	if connections.has(from_id):
 		var pc: WebRTCPeerConnection = connections[from_id]
 		pc.set_remote_description("answer", sdp_answer)
+		# Host: once an answer is received, a peer is connected – start the game
+		if my_peer_id == 1 and !game_started:
+			game_started = true
+			_begin_game_session()
 
 func _on_received_candidate(from_id: int, data: String):
 	var parts = data.split("|", false)
-	if parts.size() == 3:
-		var mid = parts[0]
-		var index = parts[1].to_int()
-		var sdp = parts[2]
-		if connections.has(from_id):
-			connections[from_id].add_ice_candidate(mid, index, sdp)
+	if parts.size() == 3 and connections.has(from_id):
+		connections[from_id].add_ice_candidate(parts[0], parts[1].to_int(), parts[2])
 
 func _on_data_channel_received(peer_id: int, channel: WebRTCDataChannel):
-	print("Data channel with peer %d established." % peer_id)
-	_begin_game_session()
+	# Data channel established – begin game session on first connection
+	if !game_started:
+		game_started = true
+		_begin_game_session()
 
 func _begin_game_session():
-	var peer_id = multiplayer.get_unique_id()
-	Global.character_selections[peer_id] = current_character_index
+	# Store this player's character choice and switch to the game scene
+	var pid = multiplayer.get_unique_id()
+	Global.character_selections[pid] = current_character_index
 	get_tree().change_scene_to_file("res://game.tscn")
 
 func _on_ChangeRight_pressed():
@@ -201,6 +219,7 @@ func _on_hover_exit():
 	_update_buttons()
 
 func _update_buttons():
+	# Visual hover effect for menu buttons (no change in networking logic)
 	host_button.modulate = Color(1, 1, 1)
 	join_button.modulate = Color(1, 1, 1)
 	changeb_button.modulate = Color(1, 1, 1)
