@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cgk820ptpdexb"]
+[gd_scene load_steps=29 format=3 uid="uid://cgk820ptpdexb"]
 
 [ext_resource type="Script" path="res://Lobby.gd" id="1_oofxy"]
 [ext_resource type="Texture2D" uid="uid://dfdtjlenjxq4a" path="res://main_menu/photo_5260287361173023056_y.jpg" id="2_ty2de"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cbaggc71wjfse" path="res://characters/character0.png" id="5_4e04k"]
 [ext_resource type="Texture2D" uid="uid://dsq2tbwst0w7p" path="res://main_menu/20250510_140459.png" id="6_2tq58"]
 [ext_resource type="Texture2D" uid="uid://batjrtvxl53o3" path="res://main_menu/idiot2png.png" id="6_dghq6"]
+[ext_resource type="Texture2D" uid="uid://b0twg86vj3yr2" path="res://lob.png" id="8_3mubw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fq3ng"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -56,6 +57,14 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_565e7"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gqkfk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8sc0y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u1sas"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2qmk6"]
+
 [node name="Lobby" type="Control"]
 layout_mode = 3
 anchors_preset = 0
@@ -70,6 +79,7 @@ position = Vector2(640, 560)
 texture = ExtResource("2_ty2de")
 
 [node name="EnterCode" type="LineEdit" parent="."]
+layout_mode = 0
 offset_left = 423.0
 offset_top = 524.0
 offset_right = 623.0
@@ -77,6 +87,7 @@ offset_bottom = 574.0
 placeholder_text = "Enter the room code:"
 
 [node name="Host" type="Button" parent="."]
+layout_mode = 0
 offset_left = 149.0
 offset_top = 344.0
 offset_right = 1200.0
@@ -89,6 +100,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_8wb6u")
 icon = ExtResource("3_47vmb")
 
 [node name="Join" type="Button" parent="."]
+layout_mode = 0
 offset_left = 149.0
 offset_top = 504.0
 offset_right = 1203.0
@@ -101,6 +113,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_68ajv")
 icon = ExtResource("4_qvb55")
 
 [node name="Player 0" type="ColorRect" parent="."]
+layout_mode = 0
 offset_left = 896.0
 offset_top = 368.0
 offset_right = 1056.0
@@ -114,6 +127,7 @@ scale = Vector2(0.18, 0.18)
 texture = ExtResource("5_4e04k")
 
 [node name="ChangeLeft" type="Button" parent="."]
+layout_mode = 0
 offset_left = 737.0
 offset_top = 442.0
 offset_right = 1995.0
@@ -126,6 +140,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_b8yyj")
 icon = ExtResource("6_2tq58")
 
 [node name="ChangeRight" type="Button" parent="."]
+layout_mode = 0
 offset_left = 1121.0
 offset_top = 442.0
 offset_right = 2379.0
@@ -143,3 +158,16 @@ offset_left = 973.0
 offset_top = 610.0
 offset_right = 1273.0
 offset_bottom = 710.0
+
+[node name="StartGame" type="Button" parent="."]
+layout_mode = 0
+offset_left = 432.0
+offset_top = 621.0
+offset_right = 1345.0
+offset_bottom = 923.0
+scale = Vector2(0.2, 0.2)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gqkfk")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_8sc0y")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_u1sas")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_2qmk6")
+icon = ExtResource("8_3mubw")
